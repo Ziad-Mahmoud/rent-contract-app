@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createEntity } from "../api/entityFactory";
+import { Link } from 'react-router-dom';
 import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import {
@@ -50,10 +51,10 @@ export default function Reports() {
   const loadData = async () => {
     setLoading(true);
     const [contractsData, ownersData, tenantsData, unitsData] = await Promise.all([
-      base44.entities.Contract.list(),
-      base44.entities.Owner.list(),
-      base44.entities.Tenant.list(),
-      base44.entities.Unit.list(),
+      createEntity("contract").list(),
+      createEntity("owner").list(),
+      createEntity("tenant").list(),
+      createEntity("unit").list(),
     ]);
     setContracts(contractsData);
     setOwners(ownersData);

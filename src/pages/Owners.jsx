@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createEntity } from "../api/entityFactory";
+import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import {
@@ -65,8 +66,8 @@ export default function Owners() {
   const loadData = async () => {
     setLoading(true);
     const [ownersData, unitsData] = await Promise.all([
-      base44.entities.Owner.list('-created_date'),
-      base44.entities.Unit.list(),
+      createEntity("owner").list('-created_date'),
+      createEntity("unit").list(),
     ]);
     setOwners(ownersData);
     setUnits(unitsData);
@@ -76,9 +77,9 @@ export default function Owners() {
   const handleSave = async (data) => {
     setSaving(true);
     if (selectedOwner) {
-      await base44.entities.Owner.update(selectedOwner.id, data);
+      await createEntity("owner").update(selectedOwner.id, data);
     } else {
-      await base44.entities.Owner.create(data);
+      await createEntity("owner").create(data);
     }
     setSaving(false);
     setShowForm(false);
@@ -88,7 +89,7 @@ export default function Owners() {
 
   const handleDelete = async () => {
     if (ownerToDelete) {
-      await base44.entities.Owner.delete(ownerToDelete.id);
+      await createEntity("owner").delete(ownerToDelete.id);
       setDeleteDialogOpen(false);
       setOwnerToDelete(null);
       loadData();

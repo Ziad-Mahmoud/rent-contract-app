@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createEntity } from "../api/entityFactory";
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { format, addDays, isBefore } from 'date-fns';
@@ -43,8 +43,8 @@ export default function Notifications() {
   const loadData = async () => {
     setLoading(true);
     const [notificationsData, contractsData] = await Promise.all([
-      base44.entities.Notification.list('-created_date'),
-      base44.entities.Contract.list(),
+      createEntity("notification").list('-created_date'),
+      createEntity("contract").list(),
     ]);
     setNotifications(notificationsData);
     setContracts(contractsData);
@@ -75,7 +75,7 @@ export default function Notifications() {
         const endDate = new Date(contract.end_date);
         const daysRemaining = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
         
-        await base44.entities.Notification.create({
+        await createEntity("notification").create({
           title: `عقد ينتهي قريباً`,
           message: `العقد رقم ${contract.contract_number || contract.id.slice(0, 8)} سينتهي خلال ${daysRemaining} يوم`,
           type: 'contract_expiry',
@@ -101,7 +101,7 @@ export default function Notifications() {
         );
 
         if (!exists) {
-          await base44.entities.Notification.create({
+          await createEntity("notification").create({
             title: `تذكير بموعد السداد`,
             message: `موعد سداد إيجار العقد رقم ${contract.contract_number || contract.id.slice(0, 8)} يوم ${paymentDay} من هذا الشهر`,
             type: 'payment_due',
@@ -118,14 +118,14 @@ export default function Notifications() {
   };
 
   const markAsRead = async (notification) => {
-    await base44.entities.Notification.update(notification.id, { is_read: true });
+    await createEntity("notification").update(notification.id, { is_read: true });
     loadData();
   };
 
   const markAllAsRead = async () => {
     const unread = notifications.filter(n => !n.is_read);
     for (const n of unread) {
-      await base44.entities.Notification.update(n.id, { is_read: true });
+      await createEntity("notification").update(n.id, { is_read: true });
     }
     loadData();
   };
@@ -133,7 +133,7 @@ export default function Notifications() {
   const deleteAllRead = async () => {
     const read = notifications.filter(n => n.is_read);
     for (const n of read) {
-      await base44.entities.Notification.delete(n.id);
+      await createEntity("notification").delete(n.id);
     }
     setDeleteDialogOpen(false);
     loadData();

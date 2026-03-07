@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
-import { base44 } from '@/api/base44Client';
+import { createEntity } from "../src/api/entityFactory";
+import { onAuthChange } from "@/api/authService";
+
 import {
   Home,
   Users,
@@ -31,9 +33,13 @@ export default function Layout({ children, currentPageName }) {
     loadUser();
   }, []);
 
+useEffect(() => {
+  return onAuthChange(setUser); // returns unsubscribe fn
+}, []);
+
   const loadUser = async () => {
     try {
-      const userData = await base44.auth.me();
+      const userData = await user.onAuthChange();
       setUser(userData);
     } catch (e) {
       console.log('User not logged in');
@@ -42,7 +48,7 @@ export default function Layout({ children, currentPageName }) {
 
   const loadNotifications = async () => {
     try {
-      const data = await base44.entities.Notification.filter({ is_read: false });
+      const data = await createEntity("notification").filter({ is_read: false });
       setNotifications(data);
     } catch (e) {
       console.log(e);
@@ -62,7 +68,7 @@ export default function Layout({ children, currentPageName }) {
   ];
 
   const handleLogout = () => {
-    base44.auth.logout();
+    user.logout();
   };
 
   return (

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createEntity } from "../api/entityFactory";
+import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import {
@@ -65,8 +66,8 @@ export default function Tenants() {
   const loadData = async () => {
     setLoading(true);
     const [tenantsData, contractsData] = await Promise.all([
-      base44.entities.Tenant.list('-created_date'),
-      base44.entities.Contract.list(),
+      createEntity("tenant").list('-created_date'),
+      createEntity("contract").list(),
     ]);
     setTenants(tenantsData);
     setContracts(contractsData);
@@ -76,9 +77,9 @@ export default function Tenants() {
   const handleSave = async (data) => {
     setSaving(true);
     if (selectedTenant) {
-      await base44.entities.Tenant.update(selectedTenant.id, data);
+      await createEntity("tenant").update(selectedTenant.id, data);
     } else {
-      await base44.entities.Tenant.create(data);
+      await createEntity("tenant").create(data);
     }
     setSaving(false);
     setShowForm(false);
@@ -88,7 +89,7 @@ export default function Tenants() {
 
   const handleDelete = async () => {
     if (tenantToDelete) {
-      await base44.entities.Tenant.delete(tenantToDelete.id);
+      await createEntity("tenant").delete(tenantToDelete.id);
       setDeleteDialogOpen(false);
       setTenantToDelete(null);
       loadData();

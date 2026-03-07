@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createEntity } from "../api/entityFactory";
+import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import {
@@ -82,10 +83,10 @@ export default function Contracts() {
   const loadData = async () => {
     setLoading(true);
     const [contractsData, ownersData, tenantsData, unitsData] = await Promise.all([
-      base44.entities.Contract.list('-created_date'),
-      base44.entities.Owner.list(),
-      base44.entities.Tenant.list(),
-      base44.entities.Unit.list(),
+      createEntity("contracts").getAll('-created_date'),
+      createEntity("owner").getAll(),
+      createEntity("tenant").getAll(),
+      createEntity("unit").list(),
     ]);
     setContracts(contractsData);
     setOwners(ownersData);
@@ -97,12 +98,12 @@ export default function Contracts() {
   const handleSave = async (data) => {
     setSaving(true);
     if (selectedContract) {
-      await base44.entities.Contract.update(selectedContract.id, data);
+      await createEntity("contracts").update(selectedContract.id, data);
     } else {
-      await base44.entities.Contract.create(data);
+      await createEntity("contracts").create(data);
       // Update unit status to rented
       if (data.unit_id && data.status === 'ساري') {
-        await base44.entities.Unit.update(data.unit_id, { status: 'مؤجرة' });
+        await createEntity("unit").update(data.unit_id, { status: 'مؤجرة' });
       }
     }
     setSaving(false);
@@ -113,7 +114,7 @@ export default function Contracts() {
 
   const handleDelete = async () => {
     if (contractToDelete) {
-      await base44.entities.Contract.delete(contractToDelete.id);
+      await createEntity("contracts").delete(contractToDelete.id);
       setDeleteDialogOpen(false);
       setContractToDelete(null);
       loadData();
@@ -129,7 +130,7 @@ export default function Contracts() {
     printWindow.document.write('@page { size: A4; margin: 20mm; }');
     printWindow.document.write('</style>');
     printWindow.document.write('</head><body>');
-    printWindow.document.write(printContent.innerHTML);
+//    printWindow.document.write(printContent.innerHTML);
     printWindow.document.write('</body></html>');
     printWindow.document.close();
     printWindow.print();

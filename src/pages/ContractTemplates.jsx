@@ -1,5 +1,8 @@
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '@/firebase';   // adjust path to your firebase.js
 import React, { useState, useEffect, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createEntity } from "../api/entityFactory";
+import { Link } from 'react-router-dom';
 import {
   FileDown,
   Plus,
@@ -82,14 +85,14 @@ export default function ContractTemplates() {
 
   const loadData = async () => {
     setLoading(true);
-    const data = await base44.entities.ContractTemplate.list('-created_date');
+    const data = await createEntity("contractTemplate").list('-created_date');
     setTemplates(data);
     setLoading(false);
   };
 
   const handleSave = async () => {
     setSaving(true);
-    await base44.entities.ContractTemplate.create(formData);
+    await createEntity("contractTemplate").create(formData);
     setSaving(false);
     setShowForm(false);
     setFormData({ title: '', template_type: 'عام', description: '', file_url: '' });
@@ -98,7 +101,7 @@ export default function ContractTemplates() {
 
   const handleDelete = async () => {
     if (templateToDelete) {
-      await base44.entities.ContractTemplate.delete(templateToDelete.id);
+      await createEntity("contractTemplate").delete(templateToDelete.id);
       setDeleteDialogOpen(false);
       setTemplateToDelete(null);
       loadData();
@@ -107,7 +110,7 @@ export default function ContractTemplates() {
 
   const handleDownload = async (template) => {
     // Increment download count
-    await base44.entities.ContractTemplate.update(template.id, {
+    await createEntity("contractTemplate").update(template.id, {
       downloads_count: (template.downloads_count || 0) + 1
     });
     
@@ -262,9 +265,10 @@ export default function ContractTemplates() {
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const fileRef = ref(storage, `uploads/${Date.now()}_${file.name}`);
+    await uploadBytes(fileRef, file);
+    const file_url = await getDownloadURL(fileRef);
     setFormData(prev => ({ ...prev, file_url }));
     setUploading(false);
   };

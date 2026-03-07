@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createEntity } from "../api/entityFactory";
+import { Link } from 'react-router-dom';
 import {
   Building2,
   Plus,
@@ -75,8 +76,8 @@ export default function Units() {
   const loadData = async () => {
     setLoading(true);
     const [unitsData, ownersData] = await Promise.all([
-      base44.entities.Unit.list('-created_date'),
-      base44.entities.Owner.list(),
+      createEntity("unit").list('-created_date'),
+      createEntity("owner").list(),
     ]);
     setUnits(unitsData);
     setOwners(ownersData);
@@ -86,9 +87,9 @@ export default function Units() {
   const handleSave = async (data) => {
     setSaving(true);
     if (selectedUnit) {
-      await base44.entities.Unit.update(selectedUnit.id, data);
+      await createEntity("unit").update(selectedUnit.id, data);
     } else {
-      await base44.entities.Unit.create(data);
+      await createEntity("unit").create(data);
     }
     setSaving(false);
     setShowForm(false);
@@ -98,7 +99,7 @@ export default function Units() {
 
   const handleDelete = async () => {
     if (unitToDelete) {
-      await base44.entities.Unit.delete(unitToDelete.id);
+      await createEntity("unit").delete(unitToDelete.id);
       setDeleteDialogOpen(false);
       setUnitToDelete(null);
       loadData();

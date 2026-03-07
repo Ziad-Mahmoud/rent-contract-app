@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createEntity } from "../api/entityFactory";
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { format, isAfter, isBefore, addDays } from 'date-fns';
@@ -40,10 +40,10 @@ export default function Dashboard() {
   const loadDashboardData = async () => {
     setLoading(true);
     const [owners, units, tenants, contracts] = await Promise.all([
-      base44.entities.Owner.list(),
-      base44.entities.Unit.list(),
-      base44.entities.Tenant.list(),
-      base44.entities.Contract.list('-created_date', 50),
+      createEntity("owner").list(),
+      createEntity("unit").list(),
+      createEntity("tenant").list(),
+      createEntity("contract").list('-created_date', 50),
     ]);
 
     const activeContracts = contracts.filter(c => c.status === 'ساري');
