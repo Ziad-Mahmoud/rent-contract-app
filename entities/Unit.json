@@ -1,0 +1,86 @@
+{
+  "name": "Unit",
+  "type": "object",
+  "properties": {
+    "owner_id": {
+      "type": "string",
+      "description": "\u0645\u0639\u0631\u0641 \u0627\u0644\u0645\u0627\u0644\u0643"
+    },
+    "unit_type": {
+      "type": "string",
+      "enum": [
+        "\u0634\u0642\u0629",
+        "\u0641\u064a\u0644\u0627",
+        "\u0648\u062d\u062f\u0629 \u0625\u062f\u0627\u0631\u064a\u0629",
+        "\u0633\u064a\u0627\u0631\u0629"
+      ],
+      "description": "\u0646\u0648\u0639 \u0627\u0644\u0648\u062d\u062f\u0629"
+    },
+    "title": {
+      "type": "string",
+      "description": "\u0639\u0646\u0648\u0627\u0646/\u0627\u0633\u0645 \u0627\u0644\u0648\u062d\u062f\u0629"
+    },
+    "address": {
+      "type": "string",
+      "description": "\u0627\u0644\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u062a\u0641\u0635\u064a\u0644\u064a"
+    },
+    "area": {
+      "type": "number",
+      "description": "\u0627\u0644\u0645\u0633\u0627\u062d\u0629 \u0628\u0627\u0644\u0645\u062a\u0631 \u0627\u0644\u0645\u0631\u0628\u0639"
+    },
+    "rooms": {
+      "type": "number",
+      "description": "\u0639\u062f\u062f \u0627\u0644\u063a\u0631\u0641"
+    },
+    "bathrooms": {
+      "type": "number",
+      "description": "\u0639\u062f\u062f \u0627\u0644\u062d\u0645\u0627\u0645\u0627\u062a"
+    },
+    "floor": {
+      "type": "string",
+      "description": "\u0627\u0644\u0637\u0627\u0628\u0642"
+    },
+    "car_model": {
+      "type": "string",
+      "description": "\u0645\u0648\u062f\u064a\u0644 \u0627\u0644\u0633\u064a\u0627\u0631\u0629 (\u0644\u0644\u0633\u064a\u0627\u0631\u0627\u062a \u0641\u0642\u0637)"
+    },
+    "car_year": {
+      "type": "string",
+      "description": "\u0633\u0646\u0629 \u0627\u0644\u0635\u0646\u0639 (\u0644\u0644\u0633\u064a\u0627\u0631\u0627\u062a \u0641\u0642\u0637)"
+    },
+    "car_plate": {
+      "type": "string",
+      "description": "\u0631\u0642\u0645 \u0627\u0644\u0644\u0648\u062d\u0629 (\u0644\u0644\u0633\u064a\u0627\u0631\u0627\u062a \u0641\u0642\u0637)"
+    },
+    "monthly_rent": {
+      "type": "number",
+      "description": "\u0627\u0644\u0625\u064a\u062c\u0627\u0631 \u0627\u0644\u0634\u0647\u0631\u064a"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "\u0645\u062a\u0627\u062d\u0629",
+        "\u0645\u0624\u062c\u0631\u0629",
+        "\u0635\u064a\u0627\u0646\u0629"
+      ],
+      "default": "\u0645\u062a\u0627\u062d\u0629",
+      "description": "\u062d\u0627\u0644\u0629 \u0627\u0644\u0648\u062d\u062f\u0629"
+    },
+    "description": {
+      "type": "string",
+      "description": "\u0648\u0635\u0641 \u0627\u0644\u0648\u062d\u062f\u0629"
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "\u0635\u0648\u0631 \u0627\u0644\u0648\u062d\u062f\u0629"
+    }
+  },
+  "required": [
+    "owner_id",
+    "unit_type",
+    "title"
+  ]
+}
